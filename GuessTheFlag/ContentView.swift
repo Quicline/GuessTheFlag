@@ -21,39 +21,68 @@ struct ContentView: View {
         } else {
             scoreTitle = "Wrong"
         }
+        
+        showScore = true
     }
     
     func askQuestion() {
         countries.shuffle()
         correctAnswer = Int.random(in: 0...2)
     }
-    
+
     var body: some View {
         
         ZStack {
-            LinearGradient(colors: [.black.opacity(01), .yellow], startPoint: .top, endPoint: .bottom)
+            RadialGradient(stops: [
+                .init(color: .red, location: 0.3),
+                .init(color: Color(red: 0.48, green: 0.83, blue: 0.2), location: 0.3)
+            ], center: .top, startRadius: 200, endRadius: 700)
+            .ignoresSafeArea()
+//            LinearGradient(colors: [.red, .yellow], startPoint:   .top, endPoint: .bottom)
+//                .ignoresSafeArea()
             
-            VStack(spacing: 30) {
-                VStack {
-                    Text("Tap the flag of")
-                        .foregroundStyle(.white)
-                        .font(.subheadline.weight(.heavy))
-                    Text(countries[correctAnswer])
-                        .foregroundStyle(.white)
-                        .font(.largeTitle.weight(.semibold))
-                }
+            VStack {
+                Spacer()
                 
-                ForEach(0..<3) { number in
-                    Button {
-                        flagTapped(number)
-                    } label: {
-                        Image(countries[number])
-                            .clipShape(.capsule)
-                            .shadow(radius: 10)
+                Text("Guess The Flag")
+                    .font(.largeTitle.bold())
+                    .foregroundStyle(.white)
+                
+                VStack(spacing: 30) {
+                    VStack {
+                        Text("Tap the flag of")
+                            //.foregroundStyle(.white)
+                            .font(.subheadline.weight(.heavy))
+                        Text(countries[correctAnswer])
+                            //.foregroundStyle(.white)
+                            .font(.largeTitle.weight(.semibold))
                     }
                     
+                    ForEach(0..<3) { number in
+                        Button {
+                            flagTapped(number)
+                        } label: {
+                            Image(countries[number])
+                                .clipShape(.capsule)
+                                .shadow(radius: 15)
+                        }
+                    }
                 }
+                .frame(maxWidth: .infinity)
+                .padding(.vertical, 20)
+                .background(.ultraThinMaterial)
+                .clipShape(.rect(cornerRadius: 20))
+                
+                Spacer()
+                Spacer()
+                
+                Text("Score: ???")
+                    .foregroundStyle(.white)
+                    .font(.title.bold())
+                
+                Spacer()
             }
+            .padding(30)
         }
         .alert(scoreTitle, isPresented: $showScore) {
             Button("Continue",action: askQuestion)
