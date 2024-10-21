@@ -14,20 +14,48 @@ struct ContentView: View {
 
     @State private var showScore = false
     @State private var scoreTitle = ""
+    @State private var endScore = 0
+    @State private var score = 0 {
+        didSet {
+            endScore = oldValue
+        }
+    }
+    @State private var questionsCount = 0
+    @State private var showReset = false
     
     func flagTapped(_ number:Int) {
-        if number == correctAnswer {
-            scoreTitle = "Correct"
-        } else {
-            scoreTitle = "Wrong"
+        if questionsCount == 7 {
+            scoreTitle = "End of Game"
+            reset()
+            askQuestion()
+            return
         }
         
+        if number == correctAnswer {
+            scoreTitle = "Correct"
+            score += 1
+        } else {
+            scoreTitle = "Wrong! That’s the flag of \(countries[number])"
+        }
+        
+        
         showScore = true
+        questionsCount += 1
+        
     }
     
     func askQuestion() {
         countries.shuffle()
         correctAnswer = Int.random(in: 0...2)
+    }
+    
+    func reset() {
+        showReset = true
+        score = 0
+        questionsCount = 0
+        countries.shuffle()
+        correctAnswer = Int.random(in: 0...2)
+        
     }
 
     var body: some View {
@@ -76,7 +104,7 @@ struct ContentView: View {
                 Spacer()
                 Spacer()
                 
-                Text("Score: ???")
+                Text("Score: \(score)")
                     .foregroundStyle(.white)
                     .font(.title.bold())
                 
@@ -87,7 +115,12 @@ struct ContentView: View {
         .alert(scoreTitle, isPresented: $showScore) {
             Button("Continue",action: askQuestion)
         } message: {
-            Text("Your score is ???")
+            Text("Your score is \(score)")
+        }
+        .alert(scoreTitle, isPresented: $showReset) {
+            Button("Continue",action: reset)
+        } message: {
+            Text("Your was \(endScore)")
         }
     }
 }
