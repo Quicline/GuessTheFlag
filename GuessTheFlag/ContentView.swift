@@ -7,6 +7,21 @@
 
 import SwiftUI
 
+struct FlagImages: View {
+    let countries: [String]
+    let number: Int
+    //let customFlagTapped: (Int) -> Void
+    //@ViewBuilder let content: ([String],Int) -> Content
+    
+    var body: some View {
+        Image(countries[number])
+            .clipShape(.capsule)
+            .shadow(radius: 15)
+    }
+}
+
+
+
 struct ContentView: View {
     
     @State var countries = ["Estonia", "France", "Germany", "Ireland", "Italy", "Nigeria", "Poland", "Spain", "UK", "Ukraine", "US"].shuffled()
@@ -90,9 +105,11 @@ struct ContentView: View {
                         Button {
                             flagTapped(number)
                         } label: {
-                            Image(countries[number])
-                                .clipShape(.capsule)
-                                .shadow(radius: 15)
+                            FlagImages(countries: countries, number: number)
+
+//                            Image(countries[number])
+//                                .clipShape(.capsule)
+//                                .shadow(radius: 15)
                         }
                     }
                 }
@@ -120,7 +137,7 @@ struct ContentView: View {
         .alert(scoreTitle, isPresented: $showReset) {
             Button("Continue",action: reset)
         } message: {
-            Text("Your was \(endScore)")
+            Text("Your score was \(endScore)")
         }
     }
 }
